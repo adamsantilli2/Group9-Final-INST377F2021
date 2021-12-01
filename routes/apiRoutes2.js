@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import express from 'express';
 import sequelize from 'sequelize';
+import controller from '../controllers/apiroutes2controller.js';
 
 import db from '../database/initializeDB.js';
 
@@ -15,11 +16,14 @@ router.get('/', (req, res) => {
 /// /////////////////////////////////////
 
 router.route('/album')
-  .get((rec, res) => {
+  .get(async(rec, res) => {
     try {
+      const result = await db.sequelizeDB.query(controller, {
+        type: sequelize.QueryTypes.SELECT
+      });
       console.log('touched /album with GET');
-      res.json({data: data});
-    } catch (err) {
+      res.json(result);
+    } catch (error) {
       console.log(error);
       res.json({error: error});
     }
@@ -57,13 +61,6 @@ router.route('/performers')
     try {
       console.log('touched /performers with GET');
       res.json({data: data});
-
-      const performers = await db.performers.findAll({
-        where:  {
-          artist_id: req.params.artist_id
-        }
-      });
-
     } catch (err) {
       console.log(error);
       res.json({error: error});
@@ -91,11 +88,7 @@ router.route('/performers')
     try {
       console.log('touched /performers with DELETE');
       res.json({data: data});
-
-      const performers = await db.performers.destroy({
-        where:  {
-          artist_id: req.params.artist_id
-
+      res.send('Successfully Deleted');
     } catch (err) {
       console.log(error);
       res.json({error: error});
