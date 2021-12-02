@@ -57,7 +57,7 @@ router.route('/album')
   });
 
 router.route('/performers')
-  .get((rec, res) => {
+  .get( async (rec, res) => {
     try {
       console.log('touched /performers with GET');
       res.json({data: data});
@@ -66,29 +66,64 @@ router.route('/performers')
       res.json({error: error});
     }
   })
-  .put((rec, res) => {
+  .put( async (rec, res) => {
     try {
       console.log('touched /performers with PUT');
       res.json({data: data});
+
+      const performers = await db.performers.update(
+        {
+          artist_first_name: req.body.artist_first_name,
+          artist_last_name: req.body.artist_last_name,
+          country_of_origin: req.body.country_of_origin,
+          gender: req.body.gender,
+          birth_date: req.body.birth_date
+        },
+        {
+          where: {
+            artist_id: req.body.artist_id
+          }
+        }
+      );
     } catch (err) {
       console.log(error);
       res.json({error: error});
     }
   })
-  .post((rec, res) => {
+  .post( async (rec, res) => {
     try {
       console.log('touched /performers with POST');
       res.json({data: data});
+
+      const performers = await db.performers.create({
+        artist_id: currentId,
+        artist_first_name: req.body.artist_first_name,
+        artist_last_name: req.body.artist_last_name,
+        country_of_origin: req.body.country_of_origin,
+        gender: req.body.gender,
+        birth_date: req.body.birth_date
+      });
+
     } catch (err) {
       console.log(error);
       res.json({error: error});
     }
   })
-  .delete((rec, res) => {
+  .delete( async (rec, res) => {
     try {
       console.log('touched /performers with DELETE');
       res.json({data: data});
+<<<<<<< HEAD
       res.send('Successfully Deleted');
+=======
+
+      const performers = await db.performers.destroy({
+        where:  {
+          artist_id: req.params.artist_id
+        }
+      });
+
+>>>>>>> 1eecefcb3baa4b5b24c2f0a1adb0cc12a2c175b3
     } catch (err) {
       console.log(error);
       res.json({error: error});
