@@ -18,9 +18,7 @@ router.get('/', (req, res) => {
 router.route('/album')
   .get(async (req, res) => {
     try {
-      const result = await db.sequelizeDB.query(data.getAlbum, {
-        type: sequelize.QueryTypes.SELECT
-      });
+      const result = await db.Album.findAll();
       console.log('touched /album with GET');
       res.json(result);
     } catch (err) {
@@ -30,7 +28,7 @@ router.route('/album')
   })
   .put(async (req, res) => {
     try {
-      await db.sequelizeDB.query(data.putAlbum,
+      await db.Album.update(
         {
           album_name: req.body.album_name,
           album_release_date: req.body.album_release_date,
@@ -40,30 +38,42 @@ router.route('/album')
           where: {
             album_id: req.body.album_id
           }
-        });
+        }
+      );
       res.send('Successful Update');
     } catch (err) {
-      console.log(error);
-      res.json({ error: 'Server Error' });
+      console.log(err);
+      res.json({ err: 'Server Error' });
     }
   })
 
-  .post((rec, res) => {
+  .post(async(rec, res) => {
+    const album = await db.Album.findAll();
+    const currentId = (await album.length) + 1;
     try {
-      console.log('touched /album with POST');
-      res.json({data: data});
+      const newAlbum = await db.Album.create({
+        album_id: currentId,
+        album_name: req.body.album_name,
+        album_release_date: req.body.album_release_date,
+        record_label_id: req.body.record_label_id
+      });
+      res.json(newAlbum);
     } catch (err) {
-      console.log(error);
-      res.json({error: error});
+      console.error(err);
+      res.error('Server error');
     }
   })
   .delete(async(rec, res) => {
     try {
-      console.log('touched /album with DELETE');
-      res.json({data: data});
+      await db.Album.destroy({
+        where: {
+          album_id: req.params.album_id
+        }
+      });
+      res.send('Successfully Deleted');
     } catch (err) {
-      console.log(error);
-      res.json({error: error});
+      console.error(err);
+      res.error('Server error');
     }
   });
 
@@ -85,7 +95,7 @@ router.route('/performers')
       console.log('touched /performers with PUT');
       res.json({data: data});
 
-      const performers = await db.performers.update(
+      const performers = await db.Performers.update(
         {
           artist_first_name: req.body.artist_first_name,
           artist_last_name: req.body.artist_last_name,
