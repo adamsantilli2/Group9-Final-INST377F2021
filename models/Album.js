@@ -3,7 +3,10 @@ export default (sequelize, DataTypes) => {
     'album',
     {
       album_id: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
+        primaryKey: true
       },
       album_name: {
         type: DataTypes.STRING
