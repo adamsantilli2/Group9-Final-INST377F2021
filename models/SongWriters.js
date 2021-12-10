@@ -2,20 +2,17 @@ export default (sequelize, DataTypes) => {
   const SongWriters = sequelize.define(
     'songwriters',
     {
-      song_id: {
+      song_writer_id: {
         type: DataTypes.INTEGER
       },
-      track_name: {
+      song_writer_first_name: {
         type: DataTypes.STRING
       },
-      track_duration: {
-        type: DataTypes.DECIMAL
-      },
-      album_id: {
-        type: DataTypes.INTEGER
-      },
-      explicit: {
+      song_writer_last_name: {
         type: DataTypes.STRING
+      },
+      song_writer_birth_date: {
+        type: DataTypes.DATE
       }
     },
     { freezeTableName: true, timestamps: false }
