@@ -1,10 +1,10 @@
-const data = {   
-  getAlbum:  `SELECT album_id, album_name, album_release_date, record_label_id
+const data = {
+  getAlbum: `SELECT album_id, album_name, album_release_date, record_label_id
                 FROM album;`,
 
   putAlbum: '',
 
-  postAlbum:   `INSERT INTO album (album_name, album_release_date, record_label_id, album_id)
+  postAlbum: `INSERT INTO album (album_name, album_release_date, record_label_id, album_id)
                 VALUES (:album_name, :album_release_date, :record_label_id, :album_id);`,
 
   getSongs: `SELECT song_id, track_name, track_duration, album_id, explicit
