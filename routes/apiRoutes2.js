@@ -63,6 +63,7 @@ router.route('/album')
       res.error('Server error');
     }
   })
+
   .delete(async(rec, res) => {
     try {
       await db.Album.destroy({
@@ -146,77 +147,60 @@ router.route('/performers')
       console.log(error);
       res.json({error: error});
     }
-  });
-
-router.route('/songs')
-  .get(async (rec, res) => {
-    try {
-      console.log('touched /songs with GET');
-      res.json({data: data});
-
-      const songs = await db.songs.findAll({
-        where: {
-          song_id: req.params.song_id
-        }
-      });
-    } catch (err) {
-      console.log(error);
-      res.json({error: error});
-    }
-  })
-  .put(async (rec, res) => {
-    try {
-      console.log('touched /songs with PUT');
-      res.json({data: data});
-
-      const songs = await db.songs.update(
-        {
-          track_name: req.body.track_name,
-          track_duration: req.body.track_duration,
-          album_id: req.body.album_id,
-          explicit: req.body.explicit
-        },
-        {
-          where: {
-            song_id: req.body.song_id
-          }
-        }
-      );
-    } catch (err) {
-      console.log(error);
-      res.json({error: error});
-    }
-  })
-  .post(async(rec, res) => {
-    try {
-      console.log('touched /songs with POST');
-      res.json({data: data});
-
-      const songs = await db.songs.create({
-        track_name: req.body.track_name,
-        track_duration: req.body.track_duration,
-        album_id: req.body.album_id,
-        explicit: req.body.explicit
-      });
-    } catch (err) {
-      console.log(error);
-      res.json({error: error});
-    }
-  })
-  .delete(async(rec, res) => {
-    try {
-      console.log('touched /songs with DELETE');
-      res.json({data: data});
-
-      const songs = await db.songs.destroy({
-        where: {
-          song_id: req.params.song_id
-        }
-      });
-    } catch (err) {
-      console.log(error);
-      res.json({error: error});
-    }
-  });
+    });
+  
+    /////songs//////
+    router.route('/songs')
+    .get(async (req, res) => {
+      try {
+        const result = await db.sequelizeDB.query(data.getSongs, {
+          type: sequelize.QueryTypes.SELECT
+        });
+        console.log('touched /song with GET');
+        res.json(result);
+      } catch (err) {
+        console.error(err);
+        res.error('Server error');
+      }
+    })
+    .put(async (req, res) => {
+      try {
+        await db.sequelizeDB.query(data.putSongs,
+          {
+            track_name: req.body.track_name,
+            track_duration: req.body.track_duration,
+            album_id: req.body.album_id,
+            explicit: req.body.explicit
+          },
+          {
+            where: {
+              songs_id: req.body.songs_id
+            }
+          });
+        res.send('Successful Update');
+      } catch (err) {
+        console.log(error);
+        res.json({ error: 'Server Error' });
+      }
+    })
+  
+    .post((rec, res) => {
+      try {
+        console.log('touched /songs with POST');
+        res.json({data: data});
+      } catch (err) {
+        console.log(error);
+        res.json({error: error});
+      }
+    })
+    .delete((rec, res) => {
+      try {
+        console.log('touched /songs with DELETE');
+        res.json({data: data});
+      } catch (err) {
+        console.log(error);
+        res.json({error: error});
+      }
+    });
 
 export default router;
